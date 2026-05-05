@@ -1,0 +1,42 @@
+.nav {
+  height: 64px;
+  border-bottom: 1px solid var(--border);
+  background-color: white;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.container {
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.logo span {
+  color: var(--primary);
+}
+
+.links {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.link {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  transition: var(--transition);
+}
+
+.link:hover {
+  color: var(--text-main);
+}

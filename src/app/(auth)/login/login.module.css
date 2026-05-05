@@ -1,0 +1,71 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: var(--surface);
+  padding: var(--space-4);
+}
+
+.title {
+  margin-bottom: var(--space-1);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.field label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+.message {
+  padding: var(--space-2);
+  background-color: #FEE2E2;
+  color: #B91C1C;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid var(--border);
+}
+
+.divider span {
+  padding: 0 var(--space-2);
+}
+
+.back {
+  margin-top: var(--space-6);
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  transition: var(--transition);
+}
+
+.back:hover {
+  color: var(--text-main);
+}
