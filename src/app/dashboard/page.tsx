@@ -1,6 +1,7 @@
 import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
 import { generateAndSavePlan } from './actions';
+import { createWorkoutSession } from './workout-actions';
 import styles from './dashboard.module.css';
 import { Button } from '@/components/ui/Button';
 
@@ -27,6 +28,11 @@ export default async function DashboardPage() {
     await generateAndSavePlan(mode);
   };
 
+  const handleWorkout = async (formData: FormData) => {
+    'use server';
+    await createWorkoutSession(formData);
+  };
+
   return (
     <div className={styles.container}>
       <header className={styles.header}>
@@ -40,9 +46,23 @@ export default async function DashboardPage() {
             <option value="diario">Modo Diário</option>
             <option value="semanal">Modo Semanal (Marmitas)</option>
           </select>
-          <Button type="submit">Regerar com IA</Button>
+          <Button type="submit">Regerar Dieta com IA</Button>
         </form>
       </header>
+
+      <section className={styles.workoutHero}>
+        <div className="card">
+          <h2>Treino de Hoje</h2>
+          <p className="text-muted">Gere um treino dinâmico baseado no seu tempo agora.</p>
+          <form action={handleWorkout} className={styles.workoutForm}>
+             <div className={styles.timeInput}>
+                <input type="number" name="time" defaultValue="30" className="input" />
+                <span>minutos</span>
+             </div>
+             <Button type="submit" variant="primary">Gerar Treino Agora</Button>
+          </form>
+        </div>
+      </section>
 
       {meals && meals.length > 0 ? (
         <div className={styles.grid}>

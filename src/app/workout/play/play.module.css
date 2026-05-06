@@ -1,0 +1,155 @@
+.container {
+  max-width: 600px;
+  margin: var(--space-4) auto;
+  padding: 0 var(--space-4);
+}
+
+.sessionCard {
+  background-color: white;
+  padding: var(--space-6);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: var(--space-6);
+}
+
+.progress {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.exerciseName {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin: var(--space-1) 0;
+}
+
+.muscle {
+  font-size: 0.875rem;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.visuals {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background-color: var(--surface);
+  border-radius: var(--radius);
+  margin-bottom: var(--space-8);
+  overflow: hidden;
+}
+
+.videoPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-weight: 700;
+  border: 2px dashed var(--border);
+}
+
+.setsList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  flex-grow: 1;
+}
+
+.setRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: var(--transition);
+}
+
+.completed {
+  background-color: #ECFDF5;
+  border-color: var(--primary);
+  opacity: 0.8;
+}
+
+.setNum {
+  font-weight: 700;
+  font-size: 0.875rem;
+}
+
+.setInput {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.setInput input {
+  width: 60px;
+  text-align: center;
+}
+
+.reps {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.timerOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.95);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.timerCircle {
+  width: 150px;
+  height: 150px;
+  border: 8px solid var(--primary);
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-8);
+}
+
+.timerValue {
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.timerLabel {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--space-8);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--border);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
