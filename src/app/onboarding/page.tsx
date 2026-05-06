@@ -26,7 +26,7 @@ export default function OnboardingPage() {
     watch,
     formState: { errors, isSubmitting },
   } = useForm<OnboardingData>({
-    resolver: zodResolver(onboardingSchema),
+    resolver: zodResolver(onboardingSchema) as any,
     defaultValues: {
       gender: 'male',
       activity_level: 'moderate',
