@@ -7,8 +7,9 @@ import styles from './login.module.css';
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: { message: string };
+  searchParams: Promise<{ message: string }>;
 }) {
+  const { message } = await searchParams;
   const supabase = await createClient();
 
   const {
@@ -109,8 +110,8 @@ export default async function LoginPage({
             />
           </div>
           
-          {searchParams?.message && (
-            <p className={styles.message}>{searchParams.message}</p>
+          {message && (
+            <p className={styles.message}>{message}</p>
           )}
 
           <button formAction={signIn} className="btn btn-primary">
