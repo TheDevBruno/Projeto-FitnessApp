@@ -107,6 +107,16 @@ p {
   background-color: var(--surface);
 }
 
+.btn-sm {
+  padding: var(--space-1) var(--space-2);
+  font-size: 0.75rem;
+}
+
+.btn-lg {
+  padding: var(--space-3) var(--space-6);
+  font-size: 1rem;
+}
+
 .input {
   width: 100%;
   padding: var(--space-2) var(--space-4);

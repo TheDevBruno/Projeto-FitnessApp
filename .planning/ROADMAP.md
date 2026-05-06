@@ -16,10 +16,10 @@
 - [x] Gerenciador de marmitas (Semanal vs Diário).
 - [x] Lista de compras inteligente agrupada por categoria.
 
-## Phase 4: Motor de Treino Adaptativo [IN PROGRESS]
-- [/] Inventário de equipamentos detalhado do usuário.
-- [/] Algoritmo de geração de treinos dinâmicos (IA).
-- [/] Interface interativa de execução (Modo Play).
+## Phase 4: Motor de Treino Adaptativo
+- [x] Inventário de equipamentos detalhado do usuário.
+- [x] Algoritmo de geração de treinos dinâmicos (IA).
+- [x] Interface interativa de execução (Modo Play).
 
 ## Phase 5: Dashboard de Evolução
 - [ ] Visualização de dados histórica (Gráficos).
