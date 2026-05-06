@@ -11,10 +11,10 @@
 - [x] Configuração de restrições de orçamento e tempo.
 - [x] Definição de objetivos claros (Emagrecimento, Massa, etc).
 
-## Phase 3: Motor de Nutrição e Logística
-- [ ] Algoritmo de sugestão de refeições por orçamento.
-- [ ] Gerenciador de Marmitas (Planejamento de preparo).
-- [ ] Lista de compras inteligente.
+## Phase 3: Motor de Nutrição e Logística [IN PROGRESS]
+- [/] Algoritmo de sugestão de refeições por orçamento.
+- [/] Gerenciador de marmitas (Semanal vs Diário).
+- [/] Lista de compras inteligente agrupada por categoria.
 
 ## Phase 4: Motor de Treino Adaptativo
 - [ ] Inventário de equipamentos do usuário.
