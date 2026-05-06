@@ -6,10 +6,10 @@
 - [x] Implementação de Authentication (Signup/Login).
 - [x] Estrutura base de layout e design system (CSS).
 
-## Phase 2: Perfil Adaptativo (Onboarding)
-- [ ] Fluxo de onboarding para coleta de métricas físicas.
-- [ ] Configuração de restrições de orçamento e tempo.
-- [ ] Definição de objetivos claros (Emagrecimento, Massa, etc).
+## Phase 2: Perfil Adaptativo (Onboarding) [IN PROGRESS]
+- [/] Fluxo de onboarding para coleta de métricas físicas.
+- [/] Configuração de restrições de orçamento e tempo.
+- [/] Definição de objetivos claros (Emagrecimento, Massa, etc).
 
 ## Phase 3: Motor de Nutrição e Logística
 - [ ] Algoritmo de sugestão de refeições por orçamento.
