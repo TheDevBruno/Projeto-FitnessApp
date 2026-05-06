@@ -125,7 +125,7 @@ export default async function LoginPage({
             <span>ou continue com</span>
           </div>
 
-          <button formAction={signInWithGoogle} className="btn btn-secondary">
+          <button formAction={signInWithGoogle} formNoValidate className="btn btn-secondary">
              Google
           </button>
         </form>
