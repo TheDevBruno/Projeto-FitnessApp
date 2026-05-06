@@ -11,15 +11,15 @@
 - [x] Configuração de restrições de orçamento e tempo.
 - [x] Definição de objetivos claros (Emagrecimento, Massa, etc).
 
-## Phase 3: Motor de Nutrição e Logística [IN PROGRESS]
-- [/] Algoritmo de sugestão de refeições por orçamento.
-- [/] Gerenciador de marmitas (Semanal vs Diário).
-- [/] Lista de compras inteligente agrupada por categoria.
+## Phase 3: Motor de Nutrição e Logística
+- [x] Algoritmo de sugestão de refeições por orçamento.
+- [x] Gerenciador de marmitas (Semanal vs Diário).
+- [x] Lista de compras inteligente agrupada por categoria.
 
-## Phase 4: Motor de Treino Adaptativo
-- [ ] Inventário de equipamentos do usuário.
-- [ ] Geração de rotinas baseadas em disponibilidade de tempo.
-- [ ] Registro de execução de exercícios.
+## Phase 4: Motor de Treino Adaptativo [IN PROGRESS]
+- [/] Inventário de equipamentos detalhado do usuário.
+- [/] Algoritmo de geração de treinos dinâmicos (IA).
+- [/] Interface interativa de execução (Modo Play).
 
 ## Phase 5: Dashboard de Evolução
 - [ ] Visualização de dados histórica (Gráficos).
