@@ -1,10 +1,10 @@
 # ROADMAP: FitnessApp
 
 ## Phase 1: Foundation & Infrastructure
-- [ ] Setup Next.js with Supabase integration.
-- [ ] Configuração de variáveis de ambiente e Vercel.
-- [ ] Implementação de Authentication (Signup/Login).
-- [ ] Estrutura base de layout e design system (CSS).
+- [x] Setup Next.js with Supabase integration.
+- [x] Configuração de variáveis de ambiente e Vercel.
+- [x] Implementação de Authentication (Signup/Login).
+- [x] Estrutura base de layout e design system (CSS).
 
 ## Phase 2: Perfil Adaptativo (Onboarding)
 - [ ] Fluxo de onboarding para coleta de métricas físicas.

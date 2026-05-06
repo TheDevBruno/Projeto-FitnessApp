@@ -1,8 +1,8 @@
 # STATE: FitnessApp
 
 ## Project Status
-- **Current Phase:** Phase 1 (Foundation & Infrastructure) - Implementation Complete
-- **Next Step:** Finalize Deployment & UAT
+- **Current Phase:** Phase 2: Perfil Adaptativo (Onboarding)
+- **Next Step:** Discuss Phase 2
 
 ## Context Memory
 - Projeto foca na interseção entre fitness e logística de vida real (tempo/dinheiro).
