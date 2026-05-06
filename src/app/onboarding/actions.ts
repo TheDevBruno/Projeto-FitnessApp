@@ -29,9 +29,9 @@ export async function saveOnboarding(data: OnboardingData) {
     });
 
   if (error) {
-    console.error('Error saving onboarding:', error);
+    console.error('FULL ERROR SAVING ONBOARDING:', JSON.stringify(error, null, 2));
     return {
-      error: 'Erro ao salvar o perfil. Tente novamente.',
+      error: `Erro no banco de dados: ${error.message} (${error.code})`,
     };
   }
 
