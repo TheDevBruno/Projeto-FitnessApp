@@ -55,12 +55,16 @@ export function EvolutionChart({
   const areaData = `${pathData} L ${points[points.length - 1].x} ${height} L ${points[0].x} ${height} Z`;
 
   return (
-    <svg width="100%" height={height} viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none">
+    <svg width="100%" height={height} viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" style={{ overflow: 'visible' }}>
       <defs>
         <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={color} stopOpacity="0.2" />
+          <stop offset="0%" stopColor={color} stopOpacity="0.3" />
           <stop offset="100%" stopColor={color} stopOpacity="0" />
         </linearGradient>
+        <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="3" result="blur" />
+          <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
       </defs>
       
       <path
@@ -75,11 +79,21 @@ export function EvolutionChart({
         strokeWidth="3"
         strokeLinecap="round"
         strokeLinejoin="round"
+        filter="url(#glow)"
       />
       
       {/* Dots for points */}
       {points.map((p, i) => (
-        <circle key={i} cx={p.x} cy={p.y} r="4" fill="white" stroke={color} strokeWidth="2" />
+        <circle 
+          key={i} 
+          cx={p.x} 
+          cy={p.y} 
+          r="4" 
+          fill="#fff" 
+          stroke={color} 
+          strokeWidth="2" 
+          style={{ filter: 'drop-shadow(0 0 4px rgba(0,0,0,0.5))' }}
+        />
       ))}
     </svg>
   );

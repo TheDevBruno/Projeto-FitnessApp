@@ -6,18 +6,18 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "LifeRealFitness | Treino e Dieta Adaptativos",
-  description: "O único app fitness que se adapta ao seu tempo, orçamento e equipamentos. Inteligência Artificial para resultados reais na vida real.",
-  keywords: ["fitness", "dieta personalizada", "treino em casa", "nutrição inteligente", "academia", "gym", "saúde"],
+  title: "MinhavidaFitness | Seu Estilo de Vida Inteligente",
+  description: "A plataforma definitiva para treinos e dieta que se adaptam à sua vida real. Inteligência Artificial para resultados consistentes.",
+  keywords: ["fitness", "dieta personalizada", "minha vida fitness", "treino inteligente", "nutrição"],
   icons: {
     icon: "/favicon.png",
     apple: "/favicon.png",
   },
   openGraph: {
-    title: "LifeRealFitness | Treino e Dieta Adaptativos",
-    description: "Resultados reais na vida real com IA.",
-    url: "https://liferealfitness.vercel.app",
-    siteName: "LifeRealFitness",
+    title: "MinhavidaFitness | Treino e Dieta Adaptativos",
+    description: "Transforme sua rotina com IA. Resultados reais na vida real.",
+    url: "https://minhavidafitness.vercel.app",
+    siteName: "MinhavidaFitness",
     locale: "pt_BR",
     type: "website",
   }
@@ -31,8 +31,12 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body className={inter.className}>
-        <Navbar />
-        {children}
+        <div className="app-layout">
+          <Sidebar />
+          <main className="main-content">
+            {children}
+          </main>
+        </div>
       </body>
     </html>
   );
