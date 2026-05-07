@@ -27,9 +27,9 @@
 - [x] Sistema de Sugestão de Aumento de Carga.
 
 ## Phase 6: Polish & Launch
-- [ ] Refinamento de micro-interações e animações.
-- [ ] Auditoria de UI/UX (Aesthetics check).
-- [ ] Deploy final e testes de UAT.
+- [x] Refinamento de micro-interações e animações.
+- [x] Auditoria de UI/UX (Aesthetics check).
+- [x] Deploy final e testes de UAT.
 
 ---
 *Last updated: 2026-05-04*
