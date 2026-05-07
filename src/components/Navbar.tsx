@@ -17,6 +17,8 @@ export default async function Navbar() {
           {user ? (
             <>
               <Link href="/dashboard" className={styles.link}>Dashboard</Link>
+              <Link href="/shopping-list" className={styles.link}>Compras</Link>
+              <Link href="/settings/equipment" className={styles.link}>Equipamentos</Link>
               <form action="/auth/signout" method="post">
                 <button className="btn btn-secondary">Sair</button>
               </form>

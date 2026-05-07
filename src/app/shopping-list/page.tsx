@@ -1,6 +1,8 @@
 import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
-import styles from './shopping-list.module.css';
+import { Button } from '@/components/ui/Button';
+import Link from 'next/link';
+import styles from './shopping.module.css';
 
 export default async function ShoppingListPage() {
   const supabase = await createClient();
@@ -10,49 +12,60 @@ export default async function ShoppingListPage() {
 
   const { data: meals } = await supabase
     .from('meal_plans')
-    .select('content');
+    .select('*')
+    .eq('user_id', user.id);
 
-  // Logic to aggregate ingredients by category
-  const aggregated: Record<string, any[]> = {};
-
+  // Agrupar ingredientes por categoria
+  const inventory: Record<string, any[]> = {};
+  
   meals?.forEach(meal => {
     meal.content.ingredients.forEach((ing: any) => {
       const cat = ing.category || 'Outros';
-      if (!aggregated[cat]) aggregated[cat] = [];
+      if (!inventory[cat]) inventory[cat] = [];
       
-      const existing = aggregated[cat].find(i => i.item === ing.item);
+      const existing = inventory[cat].find(i => i.item === ing.item);
       if (existing) {
         existing.qty += ing.qty;
       } else {
-        aggregated[cat].push({ ...ing });
+        inventory[cat].push({ ...ing });
       }
     });
   });
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Sua Lista de Compras Inteligente</h1>
-      <p className={styles.subtitle}>Agrupada por categoria para facilitar sua vida no mercado.</p>
+      <header className={styles.header}>
+        <Link href="/dashboard">← Voltar</Link>
+        <h1>Lista de Compras Inteligente</h1>
+        <p className="text-muted">Itens agrupados para facilitar sua ida ao mercado.</p>
+      </header>
 
-      {Object.keys(aggregated).length > 0 ? (
+      {Object.keys(inventory).length > 0 ? (
         <div className={styles.list}>
-          {Object.entries(aggregated).map(([category, items]) => (
-            <section key={category} className={styles.categorySection}>
-              <h2 className={styles.categoryTitle}>{category}</h2>
-              <ul className={styles.itemList}>
+          {Object.entries(inventory).map(([category, items]) => (
+            <div key={category} className={styles.categoryCard}>
+              <h3>{category}</h3>
+              <ul>
                 {items.map((item, i) => (
                   <li key={i} className={styles.item}>
-                    <input type="checkbox" className={styles.checkbox} />
+                    <input type="checkbox" />
                     <span>{item.qty}{item.unit} <strong>{item.item}</strong></span>
                   </li>
                 ))}
               </ul>
-            </section>
+            </div>
           ))}
+          
+          <div className={styles.printAction}>
+             <Button variant="secondary" onClick={() => window.print()}>Imprimir / Salvar PDF</Button>
+          </div>
         </div>
       ) : (
-        <div className={styles.empty}>
-          <p>Gere um plano alimentar no dashboard para ver sua lista de compras.</p>
+        <div className="card" style={{ textAlign: 'center' }}>
+          <p>Sua lista está vazia. Gere um plano alimentar no dashboard primeiro!</p>
+          <Link href="/dashboard">
+            <Button style={{ marginTop: '16px' }}>Ir para Dashboard</Button>
+          </Link>
         </div>
       )}
     </div>

@@ -26,36 +26,38 @@ export async function createWorkoutSession(formData: FormData) {
 
   const equipmentIds = equip?.map(e => e.equipment_id) || ['bodyweight'];
 
-  // 2. Generate Workout with IA
-  const workout = await generateWorkout({
-    timeInMinutes: time,
-    goal: goals?.goal_type || 'maintenance',
-    equipmentIds: equipmentIds,
-    level: 'intermediário' // Default for MVP
-  });
+  try {
+    // 2. Generate Workout with IA
+    const workout = await generateWorkout({
+      timeInMinutes: time,
+      goal: goals?.goal_type || 'maintenance',
+      equipmentIds: equipmentIds,
+      level: 'intermediário' // Default for MVP
+    });
 
-  // 3. Save as current session (in a real app, we'd have a 'current_session' or similar)
-  // For now, we clear previous logs of the day and insert as the planned workout
-  await supabase.from('workout_logs').delete().eq('user_id', user.id).eq('workout_date', new Date().toISOString().split('T')[0]);
+    // 3. Save
+    await supabase.from('workout_logs').delete().eq('user_id', user.id).eq('workout_date', new Date().toISOString().split('T')[0]);
 
-  const { error: insertError } = await supabase.from('workout_logs').insert(
-    workout.map(ex => ({
-      user_id: user.id,
-      exercise_id: ex.id,
-      sets: Array.from({ length: ex.sets }).map(() => ({
-        reps: ex.reps,
-        weight: 0,
-        completed: false
-      })),
-      notes: ex.notes
-    }))
-  );
+    const { error: insertError } = await supabase.from('workout_logs').insert(
+      workout.map(ex => ({
+        user_id: user.id,
+        exercise_id: ex.id,
+        sets: Array.from({ length: ex.sets }).map(() => ({
+          reps: ex.reps,
+          weight: 0,
+          completed: false
+        })),
+        notes: ex.notes
+      }))
+    );
 
-  if (insertError) {
-    console.error('Error saving workout:', insertError);
-    throw new Error('Erro ao salvar o treino.');
+    if (insertError) throw insertError;
+
+    revalidatePath('/dashboard');
+  } catch (err) {
+    console.error('CRITICAL WORKOUT ERROR:', err);
+    throw new Error('A IA não conseguiu gerar seu treino. Verifique sua conexão e a GEMINI_API_KEY na Vercel.');
   }
 
-  revalidatePath('/dashboard');
   return redirect('/workout/play');
 }

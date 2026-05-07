@@ -25,67 +25,68 @@ export async function generateAndSavePlan(mode: 'semanal' | 'diario') {
   const tdee = calculateTDEE(bmr, goals.activity_level as ActivityLevel);
   const targets = calculateMacros(tdee, goals.goal_type as GoalType);
 
-  // 3. Call AI
-  const mealPlan = await generateMealPlan({
-    calories: targets.calories,
-    macros: { p: targets.protein, c: targets.carbs, f: targets.fat },
-    goal: goals.goal_type,
-    budget: goals.monthly_budget,
-    prepTime: goals.weekly_prep_time,
-    mode
-  });
-
-  // 4. Fetch Prices for Cost Estimation
-  const { data: prices } = await supabase
-    .from('price_averages')
-    .select('item_name, cost_per_unit, unit')
-    .eq('tier', goals.monthly_budget);
-
-  const priceMap = new Map(prices?.map(p => [p.item_name.toLowerCase(), p]));
-
-  // 5. Calculate Costs and Save
-  const mealsWithCost = mealPlan.map(meal => {
-    let mealCost = 0;
-    const ingredientsWithCost = meal.ingredients.map(ing => {
-      const price = priceMap.get(ing.item.toLowerCase());
-      const cost_est = price ? (ing.qty * price.cost_per_unit) / (price.unit === 'kg' ? 1000 : 1) : 0;
-      mealCost += cost_est;
-      return { ...ing, cost_est };
+  try {
+    // 3. Call AI
+    const mealPlan = await generateMealPlan({
+      calories: targets.calories,
+      macros: { p: targets.protein, c: targets.carbs, f: targets.fat },
+      goal: goals.goal_type,
+      budget: goals.monthly_budget,
+      prepTime: goals.weekly_prep_time,
+      mode
     });
 
-    return {
-      ...meal,
-      ingredients: ingredientsWithCost,
-      total_cost_est: mealCost
-    };
-  });
+    // 4. Fetch Prices for Cost Estimation
+    const { data: prices } = await supabase
+      .from('price_averages')
+      .select('item_name, cost_per_unit, unit')
+      .eq('tier', goals.monthly_budget);
 
-  // 6. Delete old plans for the day (or just clear and insert new)
-  // For simplicity, we just insert for day 1 (today)
-  await supabase.from('meal_plans').delete().eq('user_id', user.id);
-  
-  const { error: insertError } = await supabase.from('meal_plans').insert(
-    mealsWithCost.map((meal, index) => ({
-      user_id: user.id,
-      day_of_week: 1, // Assume today for MVP
-      meal_type: ['café', 'almoço', 'janta', 'lanche'][index] || 'outro',
-      logistics_mode: mode,
-      content: {
-        name: meal.name,
-        calories: meal.calories,
-        macros: meal.macros,
-        ingredients: meal.ingredients
-      },
-      total_cost_est: meal.total_cost_est
-    }))
-  );
+    const priceMap = new Map(prices?.map(p => [p.item_name.toLowerCase(), p]));
 
-  if (insertError) {
-    console.error('Insert error:', insertError);
-    throw new Error('Erro ao salvar plano alimentar.');
+    // 5. Calculate Costs and Save
+    const mealsWithCost = mealPlan.map(meal => {
+      let mealCost = 0;
+      const ingredientsWithCost = meal.ingredients.map(ing => {
+        const price = priceMap.get(ing.item.toLowerCase());
+        const cost_est = price ? (ing.qty * price.cost_per_unit) / (price.unit === 'kg' ? 1000 : 1) : 0;
+        mealCost += cost_est;
+        return { ...ing, cost_est };
+      });
+
+      return {
+        ...meal,
+        ingredients: ingredientsWithCost,
+        total_cost_est: mealCost
+      };
+    });
+
+    // 6. Save
+    await supabase.from('meal_plans').delete().eq('user_id', user.id);
+    
+    const { error: insertError } = await supabase.from('meal_plans').insert(
+      mealsWithCost.map((meal, index) => ({
+        user_id: user.id,
+        day_of_week: 1,
+        meal_type: ['café', 'almoço', 'janta', 'lanche'][index] || 'outro',
+        logistics_mode: mode,
+        content: {
+          name: meal.name,
+          calories: meal.calories,
+          macros: meal.macros,
+          ingredients: meal.ingredients
+        },
+        total_cost_est: meal.total_cost_est
+      }))
+    );
+
+    if (insertError) throw insertError;
+
+    revalidatePath('/dashboard');
+  } catch (err) {
+    console.error('CRITICAL AI ERROR:', err);
+    throw new Error('A IA não conseguiu gerar seu plano agora. Verifique se a sua API Key do Gemini está configurada na Vercel.');
   }
-
-  revalidatePath('/dashboard');
 }
 
 export async function saveWeight(formData: FormData) {

@@ -6,8 +6,21 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "LifeRealFitness | Seu Personal Digital Adaptativo",
-  description: "Acompanhamento fitness e nutricional que se adapta à sua realidade.",
+  title: "LifeRealFitness | Treino e Dieta Adaptativos",
+  description: "O único app fitness que se adapta ao seu tempo, orçamento e equipamentos. Inteligência Artificial para resultados reais na vida real.",
+  keywords: ["fitness", "dieta personalizada", "treino em casa", "nutrição inteligente", "academia", "gym", "saúde"],
+  icons: {
+    icon: "/favicon.png",
+    apple: "/favicon.png",
+  },
+  openGraph: {
+    title: "LifeRealFitness | Treino e Dieta Adaptativos",
+    description: "Resultados reais na vida real com IA.",
+    url: "https://liferealfitness.vercel.app",
+    siteName: "LifeRealFitness",
+    locale: "pt_BR",
+    type: "website",
+  }
 };
 
 export default function RootLayout({
