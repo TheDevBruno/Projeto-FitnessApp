@@ -1,6 +1,6 @@
 import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
-import { generateAndSavePlan } from './actions';
+import { generateAndSavePlan, toggleMealAdherence } from './actions';
 import { createWorkoutSession } from './workout-actions';
 import { EvolutionSection } from '@/components/dashboard/EvolutionSection';
 import styles from './dashboard.module.css';
@@ -40,6 +40,22 @@ export default async function DashboardPage() {
     .eq('user_id', user.id)
     .order('date', { ascending: true });
 
+  const { data: adherenceData } = await supabase
+    .from('meal_adherence')
+    .select('*')
+    .eq('user_id', user.id)
+    .gte('date', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]);
+
+  const { data: workouts } = await supabase
+    .from('workout_logs')
+    .select('workout_date')
+    .eq('user_id', user.id);
+
+  const workoutDates = workouts?.map(w => w.workout_date) || [];
+
+  const todayStr = new Date().toISOString().split('T')[0];
+  const followedToday = adherenceData?.some(a => a.date === todayStr && a.followed_plan);
+
   return (
     <div className={styles.container}>
       <header className={styles.header}>
@@ -48,18 +64,30 @@ export default async function DashboardPage() {
           <p className="text-muted">Personalizado para: {goals?.goal_type} • {goals?.monthly_budget}</p>
         </div>
         
-        <form action={handleRegen} className={styles.actions}>
-          <select name="mode" className="input" defaultValue="diario">
-            <option value="diario">Modo Diário</option>
-            <option value="semanal">Modo Semanal (Marmitas)</option>
-          </select>
-          <Button type="submit">Regerar Dieta com IA</Button>
-        </form>
+        <div className={styles.actions}>
+          <form action={async () => {
+            'use server';
+            await toggleMealAdherence(todayStr, !followedToday);
+          }}>
+            <Button variant={followedToday ? 'primary' : 'secondary'}>
+              {followedToday ? '✅ Dieta Batida!' : '🔔 Marcar Dieta'}
+            </Button>
+          </form>
+          
+          <form action={handleRegen}>
+            <select name="mode" className="input" defaultValue="diario" style={{ width: 'auto', display: 'inline-block', marginRight: '8px' }}>
+              <option value="diario">Modo Diário</option>
+              <option value="semanal">Modo Semanal (Marmitas)</option>
+            </select>
+            <Button type="submit">Regerar Dieta com IA</Button>
+          </form>
+        </div>
       </header>
 
       <EvolutionSection 
         weightHistory={weightHistory || []} 
-        adherenceData={[]} 
+        adherenceData={adherenceData || []}
+        workoutDates={workoutDates}
       />
 
       <section className={styles.workoutHero}>

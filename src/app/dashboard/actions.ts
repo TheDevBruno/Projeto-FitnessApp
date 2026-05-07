@@ -115,3 +115,22 @@ export async function saveWeight(formData: FormData) {
 
   revalidatePath('/dashboard');
 }
+
+export async function toggleMealAdherence(date: string, followed: boolean) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) throw new Error('Não autorizado');
+
+  const { error } = await supabase
+    .from('meal_adherence')
+    .upsert({
+      user_id: user.id,
+      date,
+      followed_plan: followed
+    }, { onConflict: 'user_id, date' });
+
+  if (error) throw new Error('Erro ao salvar aderência.');
+
+  revalidatePath('/dashboard');
+}

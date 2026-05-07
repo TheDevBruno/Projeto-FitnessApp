@@ -8,12 +8,27 @@ import styles from './EvolutionSection.module.css';
 interface EvolutionSectionProps {
   weightHistory: any[];
   adherenceData: any[];
+  workoutDates: string[];
 }
 
-export function EvolutionSection({ weightHistory, adherenceData }: EvolutionSectionProps) {
+export function EvolutionSection({ weightHistory, adherenceData, workoutDates }: EvolutionSectionProps) {
   const currentWeight = weightHistory[weightHistory.length - 1]?.weight || 0;
   const startWeight = weightHistory[0]?.weight || 0;
   const diff = currentWeight - startWeight;
+
+  // Processar dados para o heatmap (últimos 28 dias)
+  const last28Days = Array.from({ length: 28 }).map((_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() - (27 - i));
+    const dateStr = d.toISOString().split('T')[0];
+    
+    const hasDiet = adherenceData.some(a => a.date === dateStr && a.followed_plan);
+    const hasWorkout = workoutDates.some(wd => wd.startsWith(dateStr));
+
+    return { date: dateStr, active: hasDiet || hasWorkout };
+  });
+
+  const adherenceRate = (adherenceData.filter(a => a.followed_plan).length / 30 * 100).toFixed(0);
 
   return (
     <section className={styles.container}>
@@ -47,19 +62,18 @@ export function EvolutionSection({ weightHistory, adherenceData }: EvolutionSect
             <h3>Aderência à Dieta</h3>
             <span className={styles.badge}>Mês Atual</span>
           </div>
-          <p className={styles.currentVal}>85<small>%</small></p>
+          <p className={styles.currentVal}>{adherenceRate}<small>%</small></p>
           
           <div className={styles.adherenceGrid}>
-             {/* Mock de calendário estilo heatmap */}
-             {Array.from({ length: 28 }).map((_, i) => (
+             {last28Days.map((day, i) => (
                <div 
                  key={i} 
-                 className={`${styles.daySquare} ${i % 3 !== 0 ? styles.activeDay : ''}`}
-                 title={`Dia ${i + 1}`}
+                 className={`${styles.daySquare} ${day.active ? styles.activeDay : ''}`}
+                 title={day.date}
                />
              ))}
           </div>
-          <p className={styles.hint}>Você treinou 18 dias este mês. Continue assim!</p>
+          <p className={styles.hint}>Frequência baseada nos seus registros diários.</p>
         </div>
       </div>
     </section>

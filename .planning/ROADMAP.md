@@ -21,10 +21,10 @@
 - [x] Algoritmo de geração de treinos dinâmicos (IA).
 - [x] Interface interativa de execução (Modo Play).
 
-## Phase 5: Dashboard de Evolução [IN PROGRESS]
-- [/] Visualização de Peso e Medidas (Gráficos Customizados).
-- [/] Aderência à Dieta e Calendário Mensal.
-- [/] Sistema de Sugestão de Aumento de Carga.
+## Phase 5: Dashboard de Evolução
+- [x] Visualização de Peso e Medidas (Gráficos Customizados).
+- [x] Aderência à Dieta e Calendário Mensal.
+- [x] Sistema de Sugestão de Aumento de Carga.
 
 ## Phase 6: Polish & Launch
 - [ ] Refinamento de micro-interações e animações.

@@ -1,8 +1,8 @@
 # STATE: FitnessApp
 
 ## Project Status
-- **Current Phase:** Phase 5: Dashboard de Evolução - Context Gathered
-- **Next Step:** Plan Phase 5
+- **Current Phase:** Phase 5: Dashboard de Evolução - Completed
+- **Next Step:** Phase 6: Polish & Launch
 
 ## Context Memory
 - Projeto foca na interseção entre fitness e logística de vida real (tempo/dinheiro).
