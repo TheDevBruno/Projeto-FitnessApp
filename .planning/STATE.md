@@ -1,8 +1,8 @@
 # STATE: FitnessApp
 
 ## Project Status
-- **Current Phase:** Phase 4: Motor de Treino Adaptativo - Completed
-- **Next Step:** Phase 5: Dashboard de Evolução
+- **Current Phase:** Phase 5: Dashboard de Evolução - Context Gathered
+- **Next Step:** Plan Phase 5
 
 ## Context Memory
 - Projeto foca na interseção entre fitness e logística de vida real (tempo/dinheiro).
