@@ -47,23 +47,29 @@ export function WorkoutSession({ initialLogs }: WorkoutSessionProps) {
   const loadSuggestion = currentIndex % 2 === 0 ? "Sugestão: Tente +2kg hoje!" : null;
 
   return (
-    <div className={styles.sessionCard}>
+    <div className={styles.sessionCard} key={currentIndex}>
       {loadSuggestion && (
         <div className={styles.suggestionBanner}>
           ✨ <strong>Progressão:</strong> {loadSuggestion}
         </div>
       )}
-      <header className={styles.header}>
-        <span className={styles.progress}>Exercício {currentIndex + 1} de {logs.length}</span>
-        <h2 className={styles.exerciseName}>{libraryData.name}</h2>
-        <span className={styles.muscle}>{libraryData.muscle_group}</span>
-      </header>
 
-      <div className={styles.visuals}>
-        {/* Placeholder for Video/GIF */}
-        <div className={styles.videoPlaceholder}>
-           [ VÍDEO DO EXERCÍCIO ]
-        </div>
+      <div className={styles.mediaContainer}>
+        {libraryData.video_url && libraryData.video_url !== 'https://link.to/video' ? (
+          <video src={libraryData.video_url} autoPlay loop muted playsInline />
+        ) : (
+          <div className={styles.videoPlaceholder}>
+            <span>Visualização de {libraryData.name}</span>
+          </div>
+        )}
+      </div>
+
+      <div className={styles.exerciseInfo}>
+        <header className={styles.header}>
+          <span className={styles.progress}>Exercício {currentIndex + 1} de {logs.length}</span>
+          <h2 className={styles.exerciseName}>{libraryData.name}</h2>
+          <span className={styles.muscle}>{libraryData.muscle_group}</span>
+        </header>
       </div>
 
       <div className={styles.setsList}>
