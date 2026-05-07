@@ -87,3 +87,31 @@ export async function generateAndSavePlan(mode: 'semanal' | 'diario') {
 
   revalidatePath('/dashboard');
 }
+
+export async function saveWeight(formData: FormData) {
+  const weight = parseFloat(formData.get('weight') as string);
+  const date = formData.get('date') as string || new Date().toISOString().split('T')[0];
+
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) throw new Error('Não autorizado');
+
+  const { error } = await supabase
+    .from('weight_history')
+    .insert({
+      user_id: user.id,
+      weight,
+      date
+    });
+
+  if (error) throw new Error('Erro ao salvar peso.');
+
+  // Also update current weight in user_goals
+  await supabase
+    .from('user_goals')
+    .update({ weight })
+    .eq('user_id', user.id);
+
+  revalidatePath('/dashboard');
+}

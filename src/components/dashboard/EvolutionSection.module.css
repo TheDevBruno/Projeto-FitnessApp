@@ -1,0 +1,97 @@
+.container {
+  margin-top: var(--space-12);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-6);
+}
+
+.header h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: var(--space-6);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-4);
+}
+
+.cardHeader h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background-color: var(--surface);
+  color: var(--text-muted);
+}
+
+.positive {
+  background-color: #ECFDF5;
+  color: #10B981;
+}
+
+.negative {
+  background-color: #FEF2F2;
+  color: #EF4444;
+}
+
+.currentVal {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: var(--space-4);
+}
+
+.currentVal small {
+  font-size: 1rem;
+  color: var(--text-muted);
+}
+
+.chartWrapper {
+  margin-top: var(--space-4);
+}
+
+.adherenceGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin: var(--space-6) 0;
+}
+
+.daySquare {
+  aspect-ratio: 1;
+  background-color: var(--surface);
+  border-radius: 2px;
+}
+
+.activeDay {
+  background-color: var(--primary);
+}
+
+.hint {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

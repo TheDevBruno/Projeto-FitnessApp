@@ -2,6 +2,7 @@ import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
 import { generateAndSavePlan } from './actions';
 import { createWorkoutSession } from './workout-actions';
+import { EvolutionSection } from '@/components/dashboard/EvolutionSection';
 import styles from './dashboard.module.css';
 import { Button } from '@/components/ui/Button';
 
@@ -33,6 +34,12 @@ export default async function DashboardPage() {
     await createWorkoutSession(formData);
   };
 
+  const { data: weightHistory } = await supabase
+    .from('weight_history')
+    .select('*')
+    .eq('user_id', user.id)
+    .order('date', { ascending: true });
+
   return (
     <div className={styles.container}>
       <header className={styles.header}>
@@ -49,6 +56,11 @@ export default async function DashboardPage() {
           <Button type="submit">Regerar Dieta com IA</Button>
         </form>
       </header>
+
+      <EvolutionSection 
+        weightHistory={weightHistory || []} 
+        adherenceData={[]} 
+      />
 
       <section className={styles.workoutHero}>
         <div className="card">

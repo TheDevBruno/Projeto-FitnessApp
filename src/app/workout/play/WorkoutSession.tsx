@@ -43,8 +43,16 @@ export function WorkoutSession({ initialLogs }: WorkoutSessionProps) {
   const nextExercise = () => setCurrentIndex((prev) => Math.min(prev + 1, logs.length - 1));
   const prevExercise = () => setCurrentIndex((prev) => Math.max(prev - 1, 0));
 
+  // Sugestão de carga simples (Mockada para MVP, mas pronta para receber dados reais)
+  const loadSuggestion = currentIndex % 2 === 0 ? "Sugestão: Tente +2kg hoje!" : null;
+
   return (
     <div className={styles.sessionCard}>
+      {loadSuggestion && (
+        <div className={styles.suggestionBanner}>
+          ✨ <strong>Progressão:</strong> {loadSuggestion}
+        </div>
+      )}
       <header className={styles.header}>
         <span className={styles.progress}>Exercício {currentIndex + 1} de {logs.length}</span>
         <h2 className={styles.exerciseName}>{libraryData.name}</h2>
