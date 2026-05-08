@@ -56,6 +56,42 @@
   border-top: 1px solid var(--border);
 }
 
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: var(--space-2);
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1rem;
+  color: #000;
+  flex-shrink: 0;
+}
+
+.userName {
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: var(--text);
+}
+
+.userEmail {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+}
+
 .logoutBtn {
   width: 100%;
   display: flex;
@@ -67,7 +103,8 @@
   color: #ff4d4f;
   cursor: pointer;
   font-family: inherit;
-  font-size: 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
   border-radius: var(--radius);
   transition: var(--transition);
 }
