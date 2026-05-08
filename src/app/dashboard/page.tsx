@@ -5,23 +5,32 @@ import { createWorkoutSession } from './workout-actions';
 import { EvolutionSection } from '@/components/dashboard/EvolutionSection';
 import styles from './dashboard.module.css';
 import { Button } from '@/components/ui/Button';
+import Link from 'next/link';
 
 export default async function DashboardPage() {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
 
-  if (!user) return redirect('/login');
+  if (authError || !user) return redirect('/login');
 
-  const { data: meals } = await supabase
-    .from('meal_plans')
-    .select('*')
-    .order('created_at', { ascending: true });
+  // ✅ All queries filtered by user_id to respect RLS
+  const [mealsResult, goalsResult, weightResult, adherenceResult, workoutsResult] = await Promise.all([
+    supabase.from('meal_plans').select('*').eq('user_id', user.id).order('created_at', { ascending: true }),
+    supabase.from('user_goals').select('goal_type, monthly_budget').eq('user_id', user.id).single(),
+    supabase.from('weight_history').select('*').eq('user_id', user.id).order('date', { ascending: true }),
+    supabase.from('meal_adherence').select('*').eq('user_id', user.id)
+      .gte('date', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]),
+    supabase.from('workout_logs').select('workout_date').eq('user_id', user.id),
+  ]);
 
-  const { data: goals } = await supabase
-    .from('user_goals')
-    .select('goal_type, monthly_budget')
-    .eq('user_id', user.id)
-    .single();
+  const meals = mealsResult.data || [];
+  const goals = goalsResult.data;
+  const weightHistory = weightResult.data || [];
+  const adherenceData = adherenceResult.data || [];
+  const workoutDates = (workoutsResult.data || []).map((w: any) => w.workout_date);
+
+  const todayStr = new Date().toISOString().split('T')[0];
+  const followedToday = adherenceData.some((a: any) => a.date === todayStr && a.followed_plan);
 
   const handleRegen = async (formData: FormData) => {
     'use server';
@@ -34,110 +43,103 @@ export default async function DashboardPage() {
     await createWorkoutSession(formData);
   };
 
-  const { data: weightHistory } = await supabase
-    .from('weight_history')
-    .select('*')
-    .eq('user_id', user.id)
-    .order('date', { ascending: true });
-
-  const { data: adherenceData } = await supabase
-    .from('meal_adherence')
-    .select('*')
-    .eq('user_id', user.id)
-    .gte('date', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]);
-
-  const { data: workouts } = await supabase
-    .from('workout_logs')
-    .select('workout_date')
-    .eq('user_id', user.id);
-
-  const workoutDates = workouts?.map(w => w.workout_date) || [];
-
-  const todayStr = new Date().toISOString().split('T')[0];
-  const followedToday = adherenceData?.some(a => a.date === todayStr && a.followed_plan);
-
   return (
     <div className={styles.container}>
+      {/* Header */}
       <header className={styles.header}>
         <div>
-          <h1>Seu Plano Alimentar</h1>
-          <p className="text-muted">Personalizado para: {goals?.goal_type} • {goals?.monthly_budget}</p>
+          <h1>Olá, {user.email?.split('@')[0]} 👋</h1>
+          <p className="text-muted">
+            {goals ? `Meta: ${goals.goal_type} · ${goals.monthly_budget}` : 'Complete seu perfil para começar'}
+          </p>
         </div>
-        
-        <div className={styles.actions}>
-          <form action={async () => {
-            'use server';
-            await toggleMealAdherence(todayStr, !followedToday);
-          }}>
-            <Button variant={followedToday ? 'primary' : 'secondary'}>
-              {followedToday ? '✅ Dieta Batida!' : '🔔 Marcar Dieta'}
-            </Button>
-          </form>
-          
-          <form action={handleRegen}>
-            <select name="mode" className="input" defaultValue="diario" style={{ width: 'auto', display: 'inline-block', marginRight: '8px' }}>
-              <option value="diario">Modo Diário</option>
-              <option value="semanal">Modo Semanal (Marmitas)</option>
-            </select>
-            <Button type="submit">Regerar Dieta com IA</Button>
-          </form>
-        </div>
+        <form action={async () => {
+          'use server';
+          await toggleMealAdherence(todayStr, !followedToday);
+        }}>
+          <Button variant={followedToday ? 'primary' : 'secondary'} type="submit">
+            {followedToday ? '✅ Dieta Batida!' : '🔔 Marcar Dieta'}
+          </Button>
+        </form>
       </header>
 
-      <EvolutionSection 
-        weightHistory={weightHistory || []} 
-        adherenceData={adherenceData || []}
+      {/* Quick Actions */}
+      <div className={styles.quickActions}>
+        <div className={`card ${styles.actionCard}`}>
+          <div className={styles.actionIcon}>🏋️</div>
+          <h3>Treino de Hoje</h3>
+          <p className="text-muted">Gere baseado no tempo disponível</p>
+          <form action={handleWorkout} style={{ marginTop: '16px' }}>
+            <div className={styles.timeRow}>
+              <input type="number" name="time" defaultValue="30" className="input" style={{ width: '80px' }} />
+              <span className="text-muted">min</span>
+            </div>
+            <Button type="submit" variant="primary" style={{ width: '100%', marginTop: '12px' }}>
+              Gerar Treino
+            </Button>
+          </form>
+        </div>
+
+        <div className={`card ${styles.actionCard}`}>
+          <div className={styles.actionIcon}>🥗</div>
+          <h3>Plano Alimentar</h3>
+          <p className="text-muted">IA adaptada ao seu orçamento</p>
+          <form action={handleRegen} style={{ marginTop: '16px' }}>
+            <select name="mode" className="input" defaultValue="diario" style={{ marginBottom: '12px' }}>
+              <option value="diario">Diário</option>
+              <option value="semanal">Semanal (Marmitas)</option>
+            </select>
+            <Button type="submit" style={{ width: '100%' }}>
+              {meals.length > 0 ? 'Regerar Plano' : 'Gerar Meu Plano'}
+            </Button>
+          </form>
+        </div>
+
+        <Link href="/shopping-list" className={`card ${styles.actionCard} ${styles.linkCard}`}>
+          <div className={styles.actionIcon}>🛒</div>
+          <h3>Lista de Compras</h3>
+          <p className="text-muted">{meals.length} itens do seu plano</p>
+          <div className={styles.actionArrow}>→</div>
+        </Link>
+      </div>
+
+      {/* Evolution */}
+      <EvolutionSection
+        weightHistory={weightHistory}
+        adherenceData={adherenceData}
         workoutDates={workoutDates}
       />
 
-      <section className={styles.workoutHero}>
-        <div className="card">
-          <h2>Treino de Hoje</h2>
-          <p className="text-muted">Gere um treino dinâmico baseado no seu tempo agora.</p>
-          <form action={handleWorkout} className={styles.workoutForm}>
-             <div className={styles.timeInput}>
-                <input type="number" name="time" defaultValue="30" className="input" />
-                <span>minutos</span>
-             </div>
-             <Button type="submit" variant="primary">Gerar Treino Agora</Button>
-          </form>
-        </div>
-      </section>
-
-      {meals && meals.length > 0 ? (
-        <div className={styles.grid}>
-          {meals.map((meal) => (
-            <div key={meal.id} className="card">
-              <div className={styles.mealHeader}>
-                <span className={styles.mealType}>{meal.meal_type}</span>
-                <span className={styles.cost}>R$ {meal.total_cost_est.toFixed(2)}</span>
+      {/* Meals */}
+      {meals.length > 0 ? (
+        <section className={styles.mealsSection}>
+          <h2 className={styles.sectionTitle}>Suas Refeições</h2>
+          <div className={styles.grid}>
+            {meals.map((meal: any) => (
+              <div key={meal.id} className="card">
+                <div className={styles.mealHeader}>
+                  <span className={styles.mealType}>{meal.meal_type}</span>
+                  <span className={styles.cost}>R$ {Number(meal.total_cost_est || 0).toFixed(2)}</span>
+                </div>
+                <h3 className={styles.mealName}>{meal.content?.name}</h3>
+                <div className={styles.macros}>
+                  <span>{meal.content?.calories} kcal</span>
+                  <span>P: {meal.content?.macros?.p}g</span>
+                  <span>C: {meal.content?.macros?.c}g</span>
+                  <span>G: {meal.content?.macros?.f}g</span>
+                </div>
+                <ul className={styles.ingredients}>
+                  {meal.content?.ingredients?.map((ing: any, i: number) => (
+                    <li key={i}>{ing.qty}{ing.unit} {ing.item}</li>
+                  ))}
+                </ul>
               </div>
-              <h3 className={styles.mealName}>{meal.content.name}</h3>
-              
-              <div className={styles.macros}>
-                <span>{meal.content.calories} kcal</span>
-                <span>P: {meal.content.macros.p}g</span>
-                <span>C: {meal.content.macros.c}g</span>
-                <span>G: {meal.content.macros.f}g</span>
-              </div>
-
-              <ul className={styles.ingredients}>
-                {meal.content.ingredients.map((ing: any, i: number) => (
-                  <li key={i}>
-                    {ing.qty}{ing.unit} {ing.item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </section>
       ) : (
         <div className={styles.empty}>
-          <p>Você ainda não tem um plano gerado.</p>
-          <form action={handleRegen}>
-            <input type="hidden" name="mode" value="diario" />
-            <Button type="submit">Gerar Meu Primeiro Plano</Button>
-          </form>
+          <p>🥗 Gere seu primeiro plano alimentar acima!</p>
         </div>
       )}
     </div>
